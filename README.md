@@ -86,9 +86,33 @@ for 循环
 杀死进程失败时，输出 Failed to kill 进程名 + 进程号。
 
 #注意事项：
+确保正确的进程名称
 
+进程名称需要与 ps 命令显示的名称精确匹配，建议使用完整的进程名称或独特的标识，以避免误杀其他进程。
 
+权限
 
+确保您有权限查看和杀死这些进程。通常情况下，需要以 root 用户或具有相应权限的用户执行脚本。
+
+慎用 kill -9
+
+kill -9 会强制终止进程，进程无法进行清理操作，可能导致数据丢失或资源未释放。建议在可能的情况下，优先使用 kill 或 kill -15（即 SIGTERM）给进程发送终止信号，让其有机会进行善后处理。
+
+#其他
+如果您希望先尝试正常终止，再使用强制终止，可以修改脚本如下：
+```bash
+# 尝试正常终止
+kill "$pid"
+sleep 2
+# 检查进程是否还存在
+if ps -p "$pid" > /dev/null; then
+    # 强制终止
+    kill -9 "$pid"
+    echo "succeed forcefully kill $pname + $pid"
+else
+    echo "succeed gracefully kill $pname + $pid"
+fi
+```
 
 
 
